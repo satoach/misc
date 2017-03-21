@@ -1,0 +1,45 @@
+#!/bin/bash
+
+query=""
+
+PrintUsage()
+{
+    echo "USAGE: $0 [-b] [-m {t|n}] [-q query]"
+}
+
+while getopts "bm:q:" flag; do
+    case $flag in
+        \?) OPT_ERR=1; break;;
+        b) branch="$(git branch -a | peco | tr "*" " ")";;
+        m) mode="$OPTARG";;
+        q) query="$OPTARG";;
+    esac
+done
+
+shift $(($OPTIND - 1))
+
+if [ $OPT_ERR ];then
+    PrintUsage
+    exit 1
+fi
+
+echo branch=$branch, mode=$mode, query=$query rest="$@"
+
+pecoopt=""
+if [ -n "$query" ]; then
+    pecoopt="--query $query"
+fi
+
+# git log oneliner option. hash autor[date]: commitlog
+cmd='git log $branch --pretty=format:"%h %an[%ar]: %s" $@ | peco $pecoopt | cut -d " " -f 1'
+echo $cmd
+HASH=$(git log $branch --pretty=format:"%h %an[%ar]: %s" $@ | peco $pecoopt | cut -d " " -f 1)
+if [ ${HASH} ]; then
+    case $mode in
+        "t" ) git difftool ${HASH}^ ${HASH} ;;
+        "n" ) git diff --name-status ${HASH}^ ${HASH} ;;
+        * )   git diff ${HASH}^ ${HASH} ;;
+    esac
+else
+    echo "can not find hash..."
+fi
