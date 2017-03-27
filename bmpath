@@ -3,15 +3,16 @@
 BMFILE="${HOME}/bookmark_path.txt"
 BMFILE_BAK="${BMFILE}.bak"
 path=""
+linenum=""
 query=""
-bmfileonly=0
+localonly=0
 interactive=0
 
 echoB() { echo -e "$(tput bold)$1$(tput sgr0)"; }
 function help() ## show help
 {
     echoB "USAGE:"
-    echo "$0 [-bih] [-q query] command"
+    echo "$0 [-lih] [-q query] command"
     echo ""
     echoB "COMMAND:"
     grep -E '^function [a-zA-Z_-]+ *\( *\) *## .*$$' $0 | cut -d " " -f2- | sort \
@@ -23,9 +24,9 @@ function help() ## show help
                        $1, args, substr($2, RSTART+RLENGTH), length($2)-RSTART}'
     echo ""
     echoB "OPTION:"
-    echo "-b: use bookmark file only. no use ghq list."
+    echo "-l: use bookmark file only. no use ghq list."
     echo "-q: set query for search"
-    echo "-i: intaractive mode"
+    echo "-i: interactive mode"
     echo "-h: print help"
     echo ""
 }
@@ -33,20 +34,22 @@ function help() ## show help
 search()
 {
     test ! -n "$path" && path=$(pwd)
-    cat ${BMFILE} | grep -n -x ${path} | cut -d ":" -f 1
+    linenum=$(cat ${BMFILE} | grep -n -x ${path} | cut -d ":" -f 1)
 }
 
 function add() ## add path to bookmark
 {
-    local linenum= $(search)
+    test $# -ge 1 && path=$1
+    search
     echo "add path: $path"
     test ! -n "$linenum" && { cp $BMFILE $BMFILE_BAK; echo $path >> $BMFILE; }
 }
 
 function del() ## remove path from bookmark.
 {
-    test $intaractive -eq 1 && path=$(cat $BMFILE | peco)
-    local linenum= $(search)
+    test $# -ge 1 && path=$1
+    test $interactive -eq 1 && path=$(cat $BMFILE | peco)
+    search
     echo "remove path: $path"
     if [ -n "$linenum" ]; then
         cp $BMFILE $BMFILE_BAK
@@ -58,7 +61,7 @@ function del() ## remove path from bookmark.
 function show() ## show bookmark list
 {
     local cmd="cat $BMFILE"
-    test $bmfileonly -eq 0 && cmd=$cmd"; ghq list --full-path"
+    test $localonly -eq 0 && cmd=$cmd"; ghq list --full-path"
 
     local pecoopt=""
     test -n "$query" && pecoopt="--query $query"
@@ -71,7 +74,7 @@ main()
     while getopts "lp:q:h" flag; do
         case $flag in
             \?) OPT_ERR=1; break;;
-            b) bmfileonly=1;;
+            l) localonly=1;;
             q) query="$OPTARG";;
             i) interactive=1;;
             h) help; exit 0;;
@@ -83,7 +86,7 @@ main()
 
     case $1 in
         "add" | \
-        "rm"  | \
+        "del"  | \
         "show") $1 ${@:2};;
         "") show ;;
         * ) help; exit 1;;
