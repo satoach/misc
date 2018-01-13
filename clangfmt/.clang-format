@@ -1,0 +1,8 @@
+#requires clang - format >= 3.6
+BasedOnStyle : "LLVM"
+IndentWidth : 4
+BreakBeforeBraces : Linux
+AllowShortFunctionsOnASingleLine : false
+IndentCaseLabels : false
+
+SortIncludes : false
