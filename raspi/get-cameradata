@@ -1,0 +1,4 @@
+#!/bin/bash
+
+# sftp -r pi@raspberrypi.local:/home/pi/camera/data/ ./
+sftp -b ./get_data.bat pi@raspberrypi.local
