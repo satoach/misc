@@ -1,7 +1,6 @@
 #!/bin/bash
 
 BMFILE="${HOME}/bookmark_path.txt"
-BMFILE_BAK="${BMFILE}.bak"
 path=""
 linenum=""
 query=""
@@ -42,7 +41,7 @@ function add() ## add path to bookmark
     test $# -ge 1 && path=$1
     search
     echo "add path: $path"
-    test ! -n "$linenum" && { cp $BMFILE $BMFILE_BAK; echo $path >> $BMFILE; }
+    test ! -n "$linenum" && { echo $path >> $BMFILE; }
 }
 
 function del() ## remove path from bookmark.
@@ -52,9 +51,7 @@ function del() ## remove path from bookmark.
     search
     echo "remove path: $path"
     if [ -n "$linenum" ]; then
-        cp $BMFILE $BMFILE_BAK
-        sed -e "${linenum}d" $BMFILE_BAK > $BMFILE
-        sed -e "${linenum}d" $BMFILE_BAK
+        sed -e "${linenum}d" $BMFILE
     fi
 }
 
