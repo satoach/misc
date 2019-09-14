@@ -1,0 +1,75 @@
+#!/bin/bash
+
+name=actmp
+if [ $# -ge 1 ]; then
+    name=$1
+fi
+
+# prepare dir
+path=$(pwd)/$name
+mkdir -p $path
+cd $path || {
+    echo "cd $path"
+    exit 1
+}
+
+# cpp file
+cat <<- 'EOF' > main.cpp
+#include <bits/stdc++.h>
+
+int main()
+{
+    int n;
+    int ans = 0;
+    std::cin >> n;
+
+    std::cout << ans << std::endl;
+
+    return 0;
+}
+EOF
+
+# Makefile
+cat <<-'EOF' > Makefile
+CFLAGS = -Wall -std=c11 -g
+CXXFLAGS = -Wall -O2 -pipe
+TARGET=target
+SRCS=$(wildcard *.cpp)
+OBJS=$(SRCS:.cpp=.o)
+
+all: clean $(TARGET)
+
+
+$(TARGET): $(OBJS)
+	$(CXX) -o $@ $(OBJS)
+
+clean:
+	rm -f $(TARGET) $(OBJS) 
+
+test:
+	./test.sh
+
+.PHONY: all clean $(TARGET) test
+EOF
+
+# Test script
+cat <<- 'EOF' > test.sh
+#!/bin/bash
+
+TARGET=./target
+
+echo "---"
+${TARGET} <<EOS
+3
+EOS
+
+echo "---"
+${TARGET} <<EOS
+10
+EOS
+
+echo "---"
+${TARGET} <<EOS
+100000
+EOS
+EOF
