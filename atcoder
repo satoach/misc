@@ -14,7 +14,7 @@ cd $path || {
 }
 
 # cpp file
-cat <<- 'EOF' > main.cpp
+cat << 'EOF' > main.cpp
 #include <bits/stdc++.h>
 
 int main()
@@ -30,7 +30,7 @@ int main()
 EOF
 
 # Makefile
-cat <<-'EOF' > Makefile
+cat << 'EOF' > Makefile
 CFLAGS = -Wall -std=c11 -g
 CXXFLAGS = -Wall -O2 -pipe
 TARGET=target
@@ -47,13 +47,13 @@ clean:
 	rm -f $(TARGET) $(OBJS) 
 
 test:
-	./test.sh
+	bash ./test.sh
 
 .PHONY: all clean $(TARGET) test
 EOF
 
 # Test script
-cat <<- 'EOF' > test.sh
+cat << 'EOF' > test.sh
 #!/bin/bash
 
 TARGET=./target
