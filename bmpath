@@ -55,6 +55,11 @@ function del() ## remove path from bookmark.
     fi
 }
 
+function refresh() ## refresh the bookmark list
+{
+    cat $BMFILE | sort -u > $BMFILE
+}
+
 function show() ## show bookmark list
 {
     local cmd="cat $BMFILE"
@@ -84,6 +89,7 @@ main()
     case $1 in
         "add" | \
         "del"  | \
+        "refresh"  | \
         "show") $1 ${@:2};;
         "") show ;;
         * ) help; exit 1;;
