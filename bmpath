@@ -40,24 +40,32 @@ function add() ## add path to bookmark
 {
     test $# -ge 1 && path=$1
     search
+    test -n "$linenum" && {
+        echo "no added";
+        exit 1
+    }
+
+    echo $path >> $BMFILE;
     echo "add path: $path"
-    test ! -n "$linenum" && { echo $path >> $BMFILE; }
+    exit 0
 }
 
 function del() ## remove path from bookmark.
 {
     test $# -ge 1 && path=$1
-    test $interactive -eq 1 && path=$(cat $BMFILE | peco)
+    test $interactive -eq 1 && show
+
     search
-    echo "remove path: $path"
-    if [ -n "$linenum" ]; then
+    echo "remove path[$linenum]: $path"
+    if [ ! -n "$linenum" ]; then
         sed -e "${linenum}d" $BMFILE
     fi
 }
 
 function refresh() ## refresh the bookmark list
 {
-    cat $BMFILE | sort -u > $BMFILE
+    uniqlist=$(cat $BMFILE | sort -u)
+    echo "$uniqlist" > $BMFILE
 }
 
 function show() ## show bookmark list
@@ -65,15 +73,16 @@ function show() ## show bookmark list
     local cmd="cat $BMFILE"
     test $localonly -eq 0 && cmd=$cmd"; ghq list --full-path"
 
-    local pecoopt=""
-    test -n "$query" && pecoopt="--query $query"
+    local word=""
+    test -n "$query" && word="--query $query"
 
-    echo "$(eval $cmd)" | peco $pecoopt
+    path=$(eval $cmd | peco $word)
+    echo $path
 }
 
 main()
 {
-    while getopts "lp:q:h" flag; do
+    while getopts "lip:q:h" flag; do
         case $flag in
             \?) OPT_ERR=1; break;;
             l) localonly=1;;
