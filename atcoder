@@ -36,7 +36,7 @@ TARGET=target
 SRCS=$(wildcard *.cpp)
 OBJS=$(SRCS:.cpp=.o)
 
-all: clean $(TARGET)
+all: clean $(TARGET) test
 
 
 $(TARGET): $(OBJS)
@@ -57,18 +57,18 @@ cat << 'EOF' > test.sh
 
 TARGET=./target
 
+
 echo "---"
 ${TARGET} <<EOS
-
 EOS
 
+
 echo "---"
 ${TARGET} <<EOS
-
 EOS
 
+
 echo "---"
 ${TARGET} <<EOS
-
 EOS
 EOF
