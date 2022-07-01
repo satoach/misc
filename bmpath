@@ -1,6 +1,7 @@
 #!/bin/bash
 
-BMFILE="${HOME}/bookmark_path.txt"
+BMPATH="${HOME}/.local/config"
+BMFILE="${BMPATH}/bookmark_path.txt"
 path=""
 linenum=""
 query=""
@@ -29,6 +30,14 @@ function help() ## show help
     echo "-i: interactive mode"
     echo "-h: print help"
     echo ""
+}
+
+check_bmfile_exist() 
+{
+    mkdir -p $BMPATH
+    if [ ! -e ${BMFILE} ]; then
+        touch ${BMFILE}
+    fi
 }
 
 search()
