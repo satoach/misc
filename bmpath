@@ -63,7 +63,7 @@ function add() ## add path to bookmark
 function del() ## remove path from bookmark.
 {
     test $# -ge 1 && path=$1
-    test $interactive -eq 1 && show
+    test $interactive -eq 1 && list
 
     search
     echo "remove path[$linenum]: $path"
@@ -78,7 +78,7 @@ function refresh() ## refresh the bookmark list
     echo "$uniqlist" > $BMFILE
 }
 
-function show() ## show bookmark list
+function list() ## show bookmark list
 {
     local cmd="cat $BMFILE"
     test $localonly -eq 0 && cmd=$cmd"; ghq list --full-path"
@@ -109,8 +109,8 @@ main()
         "add" | \
         "del"  | \
         "refresh"  | \
-        "show") $1 ${@:2};;
-        "") show ;;
+        "list") $1 ${@:2};;
+        "") list ;;
         * ) help; exit 1;;
     esac
 
