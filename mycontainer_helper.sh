@@ -29,10 +29,16 @@ function help() ## print help
 
 select_cmd()
 {
-    echo "---------------------------"
-    echo "select command"
-    echo "---------------------------"
-    CMD=`echo -e "podman\ndocker" | fzf`
+    cmdlist=("podman" "docker")
+
+    if [ -n "$1" ]; then
+        CMD=$1
+    else
+        echo "---------------------------"
+        echo "select command"
+        echo "---------------------------"
+        CMD=`echo ${cmdlist[@]} | tr ' ' '\n' | fzf`
+    fi
 
     if [ -z "${CMD}" ]; then
         fatal "no cmd"
@@ -41,7 +47,7 @@ select_cmd()
 
 select_container()
 {
-    select_cmd
+    select_cmd $1
 
     echo "---------------------------"
     echo "select ${CMD} container"
@@ -57,13 +63,13 @@ select_container()
 
 function start() ## start the container
 {
-    select_container
+    select_container $1
     ${CMD} start ${CONTAINER}
 }
 
 function stop() ## stop the container
 {
-    select_container
+    select_container $1
     ${CMD} stop ${CONTAINER}
 }
 
@@ -81,8 +87,8 @@ function show()  ## show the current container list
 }
 
 case $1 in
-    "start") start;;
-    "stop") stop;;
+    "start") start ${@:2};;
+    "stop") stop ${@:2};;
     "show") show;;
     *) help;;
 esac
