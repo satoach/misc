@@ -12,4 +12,5 @@ help:  ## Print help
 	awk 'BEGIN {FS = ":.*?## "}; {printf "\t\033[36m%-20s\033[0m %s\n", $$1, $$2}'
 	@echo ""
 
+.PHONY: help
 endif # INCLUDED_MYUTIL_MK
