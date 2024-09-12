@@ -1,5 +1,5 @@
-ifndef INCLUDED_MYCMN_MK
-INCLUDED_MYCMN_MK := 1
+ifndef INCLUDED_MYUTIL_MK
+INCLUDED_MYUTIL_MK := 1
 
 SHELL := /bin/bash
 print_val = @echo $(1) is $($(1))
@@ -12,4 +12,4 @@ help:  ## Print help
 	awk 'BEGIN {FS = ":.*?## "}; {printf "\t\033[36m%-20s\033[0m %s\n", $$1, $$2}'
 	@echo ""
 
-endif # INCLUDED_MYCMN_MK
+endif # INCLUDED_MYUTIL_MK
