@@ -43,7 +43,7 @@ check_bmfile_exist()
 search()
 {
     test ! -n "$path" && path=$(pwd)
-    linenum=$(cat ${BMFILE} | grep -n -x ${path} | cut -d ":" -f 1)
+    linenum=$(cat ${BMFILE} | grep -n -x "${path}" | cut -d ":" -f 1)
 }
 
 function add() ## add path to bookmark
